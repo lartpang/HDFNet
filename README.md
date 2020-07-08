@@ -19,7 +19,7 @@
 
 ## Repository Details
 
-* `base`: Store some code for backbone networks.
+* `backbone`: Store some code for backbone networks.
 * `loss`: The code of the loss function.
 * `module`: The code of important modules.
 * `network`: The code of the network.
