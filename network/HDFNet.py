@@ -22,7 +22,6 @@ from module.MyModules import (
 )
 
 
-# B+Td+Trgb+ICCVDCM
 class HDFNet(nn.Module):
     def __init__(self, pretrained=True):
         super(HDFNet, self).__init__()
