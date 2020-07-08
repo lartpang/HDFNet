@@ -2,6 +2,8 @@
 
 (ECCV 2020) Hierarchical Dynamic Filtering Network for RGB-D Salient Object Detection
 
+[[Results & PretrainedParams (j9qu)](https://pan.baidu.com/s/1hExlf0uZ0kuar99xzpL0Sw)]
+
 ```text
 @inproceedings{HDFNet-ECCV2020,
     author = {Youwei Pang and Lihe Zhang and Xiaoqi Zhao and Huchuan Lu},
