@@ -7,8 +7,6 @@
 import os
 from datetime import datetime
 
-from config import path_config
-
 
 class AvgMeter(object):
     def __init__(self):
@@ -27,7 +25,7 @@ class AvgMeter(object):
         self.avg = self.sum / self.count
 
 
-def pre_mkdir():
+def pre_mkdir(path_config):
     # 提前创建好记录文件，避免自动创建的时候触发文件创建事件
     check_mkdir(path_config["pth_log"])
     make_log(path_config["te_log"], f"=== te_log {datetime.now()} ===")
@@ -47,6 +45,13 @@ def check_mkdir(dir_name):
 def make_log(path, context):
     with open(path, "a") as log:
         log.write(f"{context}\n")
+
+
+def check_dir_path_valid(path: list):
+    for p in path:
+        if p:
+            assert os.path.exists(p)
+            assert os.path.isdir(p)
 
 
 def construct_path_dict(proj_root, exp_name):

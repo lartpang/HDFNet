@@ -18,6 +18,7 @@ from tqdm import tqdm
 
 import network
 from utils.metric import CalTotalMetric
+from utils.misc import check_dir_path_valid
 
 my_parser = argparse.ArgumentParser(
     prog="main script",
@@ -43,13 +44,6 @@ my_parser.add_argument(
 )
 my_parser.add_argument("--use_gpu", default="True", choices=["True", "False"], type=str, help="测试是否使用GPU")
 my_args = my_parser.parse_args()
-
-
-def check_dir_path_valid(path: list):
-    for p in path:
-        if p:
-            assert os.path.exists(p)
-            assert os.path.isdir(p)
 
 
 class Tester:
@@ -114,7 +108,7 @@ class Tester:
             rgb_path = os.path.join(self.image_dir, rgb_name)
             rgb_pil = Image.open(rgb_path).convert("RGB")
 
-            origin_size = rgb_pil.size
+            original_size = rgb_pil.size
 
             rgb_tensor = self.rgb_transform(rgb_pil).unsqueeze(0)
             rgb_tensor = rgb_tensor.to(self.dev, non_blocking=True)
@@ -133,27 +127,25 @@ class Tester:
                     pred_tensor = self.net(rgb_tensor)
 
             pred_tensor = pred_tensor.squeeze(0).cpu().detach()
-            pred_pil = self.to_pil(pred_tensor).resize(origin_size, resample=Image.NEAREST)
 
+            pred_pil = self.to_pil(pred_tensor).resize(original_size, resample=Image.NEAREST)
             if self.save_pre:
                 pred_pil.save(osp.join(self.save_path, depth_mask_name))
+
+            pred_array = np.asarray(pred_pil)
+            max_pred_array = pred_array.max()
+            min_pred_array = pred_array.min()
+            if max_pred_array == min_pred_array:
+                pred_array = pred_array / 255
+            else:
+                pred_array = (pred_array - min_pred_array) / (max_pred_array - min_pred_array)
 
             if self.has_masks:
                 mask_path = os.path.join(self.mask_dir, depth_mask_name)
                 mask_pil = Image.open(mask_path).convert("L")
-
                 mask_array = np.asarray(mask_pil)
-                pred_array = np.asarray(pred_pil)
-
                 mask_array = mask_array / (mask_array.max() + 1e-8)
                 mask_array = np.where(mask_array > 0.5, 1, 0)
-
-                max_pred_array = pred_array.max()
-                min_pred_array = pred_array.min()
-                if max_pred_array == min_pred_array:
-                    pred_array = pred_array / 255
-                else:
-                    pred_array = (pred_array - min_pred_array) / (max_pred_array - min_pred_array)
 
                 cal_total_metrics.update(pred_array, mask_array)
 

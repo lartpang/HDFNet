@@ -22,9 +22,9 @@ from module.MyModules import (
 )
 
 
-class HDFNet(nn.Module):
+class HDFNet_VGG16(nn.Module):
     def __init__(self, pretrained=True):
-        super(HDFNet, self).__init__()
+        super(HDFNet_VGG16, self).__init__()
         self.upsample_add = upsample_add
         self.upsample = cus_sample
 
@@ -219,7 +219,7 @@ class HDFNet_Res50(nn.Module):
             self.depth_encoder8,
             self.depth_encoder16,
             self.depth_encoder32,
-        ) = Backbone_ResNet50_in1()
+        ) = Backbone_ResNet50_in1(pretrained=pretrained)
 
         self.trans32 = nn.Conv2d(2048, 64, kernel_size=1)
         self.trans16 = nn.Conv2d(1024, 64, kernel_size=1)
@@ -296,5 +296,5 @@ class HDFNet_Res50(nn.Module):
 
 if __name__ == "__main__":
     model_path = "../../HDFFile/output/HDFNet_Ablation/Model12/TestDCV3_SimpleCombineV1_ND_NL2/pth/state_final.pth"
-    model = HDFNet()
+    model = HDFNet_VGG16()
     model.load_state_dict(torch.load(model_path))

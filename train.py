@@ -21,7 +21,7 @@ from torchvision import transforms
 from tqdm import tqdm
 import network
 from loss.HEL import HEL
-from config import arg_config, path_config, proj_root
+from config import arg_config, proj_root
 from utils.data.create_loader_imgs import create_loader
 from utils.misc import AvgMeter, construct_path_dict, make_log, pre_mkdir
 from utils.metric import CalTotalMetric
@@ -48,6 +48,10 @@ class Trainer:
             self.model_name = self.args["model"]
         self.path = construct_path_dict(proj_root=proj_root, exp_name=self.model_name)
 
+        pre_mkdir(path_config=self.path)
+        shutil.copy(f"{proj_root}/config.py", self.path["cfg_log"])
+        shutil.copy(f"{proj_root}/train.py", self.path["trainer_log"])
+
         if self.data_mode == "RGBD":
             self.tr_data_path = self.args["rgbd_data"]["tr_data_path"]
             self.te_data_list = self.args["rgbd_data"]["te_data_list"]
@@ -60,8 +64,6 @@ class Trainer:
         self.save_path = self.path["save"]
         self.save_pre = self.args["save_pre"]
 
-        # 依赖与前面属性的属性
-        self.pth_path = self.path["final_state_net"]
         self.tr_loader = create_loader(
             data_path=self.tr_data_path, mode="train", get_length=False, data_mode=self.data_mode,
         )
@@ -77,11 +79,16 @@ class Trainer:
         self.opti = self.make_optim()
 
         # 训练相关
+        self.end_epoch = self.args["epoch_num"]
         if self.args["resume"]:
-            self.resume_checkpoint(load_path=self.path["final_full_net"], mode="all")
+            try:
+                self.resume_checkpoint(load_path=self.path["final_full_net"], mode="all")
+            except:
+                print(f"{self.path['final_full_net']} does not exist and we will load {self.path['final_state_net']}")
+                self.resume_checkpoint(load_path=self.path["final_state_net"], mode="onlynet")
+                self.start_epoch = self.end_epoch
         else:
             self.start_epoch = 0
-        self.end_epoch = self.args["epoch_num"]
         self.iter_num = self.end_epoch * len(self.tr_loader)
 
     def total_loss(self, train_preds, train_alphas):
@@ -187,31 +194,31 @@ class Trainer:
                 else:
                     raise NotImplementedError
 
-            outputs_np = outputs.cpu().detach()
+            pred_array_tensor = outputs.cpu().detach()
 
-            for item_id, out_item in enumerate(outputs_np):
-                gimg_path = osp.join(in_mask_paths[item_id])
-                gt_img = Image.open(gimg_path).convert("L")
-                out_img = self.to_pil(out_item).resize(gt_img.size, resample=Image.NEAREST)
+            for item_id, pred_tensor in enumerate(pred_array_tensor):
+                mask_path = osp.join(in_mask_paths[item_id])
+                mask_pil = Image.open(mask_path).convert("L")
+                original_size = mask_pil.size
+                mask_array = np.asarray(mask_pil)
+                mask_array = mask_array / (mask_array.max() + 1e-8)
+                mask_array = np.where(mask_array > 0.5, 1, 0)
 
+                pred_pil = self.to_pil(pred_tensor).resize(original_size, resample=Image.NEAREST)
                 if save_pre:
-                    oimg_path = osp.join(self.save_path, in_names[item_id] + ".png")
-                    out_img.save(oimg_path)
+                    pred_path = osp.join(self.save_path, in_names[item_id] + ".png")
+                    pred_pil.save(pred_path)
 
-                gt_img = np.asarray(gt_img)
-                out_img = np.asarray(out_img)
-
-                gt_img = gt_img / (gt_img.max() + 1e-8)
-                gt_img = np.where(gt_img > 0.5, 1, 0)
-
-                max_out_img = out_img.max()
-                min_out_img = out_img.min()
-                if max_out_img == min_out_img:
-                    out_img = out_img / 255
+                pred_array = np.asarray(pred_pil)
+                max_pred_array = pred_array.max()
+                min_pred_array = pred_array.min()
+                if max_pred_array == min_pred_array:
+                    pred_array = pred_array / 255
                 else:
-                    out_img = (out_img - min_out_img) / (max_out_img - min_out_img)
+                    pred_array = (pred_array - min_pred_array) / (max_pred_array - min_pred_array)
 
-                cal_total_metrics.update(out_img, gt_img)
+                cal_total_metrics.update(pred_array, mask_array)
+
         results = cal_total_metrics.show()
         return results
 
@@ -293,17 +300,7 @@ class Trainer:
 
 
 if __name__ == "__main__":
-    # 保存备份数据 ###########################################################
-    print(f" ===========>> {datetime.now()}: 初始化开始 <<=========== ")
-    init_start = datetime.now()
-    pre_mkdir()
-    trainer = Trainer(arg_config, path_config)
-    print(f" ==>> 初始化完毕，用时：{datetime.now() - init_start} <<== ")
-
-    shutil.copy(f"{proj_root}/config.py", path_config["cfg_log"])
-    shutil.copy(f"{proj_root}/train.py", path_config["trainer_log"])
-
-    # 训练模型 ###############################################################
+    trainer = Trainer(arg_config)
     print(f" ===========>> {datetime.now()}: 开始训练 <<=========== ")
     trainer.train()
     print(f" ===========>> {datetime.now()}: 结束训练 <<=========== ")
