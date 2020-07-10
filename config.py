@@ -34,29 +34,28 @@ nlprte_path = os.path.join(proj_root, "utils/data/data_list", "nlpr_test_jw.lst"
 # 配置区域 #####################################################################
 arg_config = {
     # 常用配置
-    "model": "HDFNet_Res50",
-    "suffix": "DUTRGBD",
-    "resume": False,  # 是否需要恢复模型
+    "model": "HDFNet_VGG19",
+    "suffix": "7Datasets",
+    "resume": True,  # 是否需要恢复模型
     "use_aux_loss": True,  # 是否使用辅助损失
     "save_pre": True,  # 是否保留最终的预测结果
     "epoch_num": 30,  # 训练周期
     "lr": 0.005,
-    # 任务模式，支持RGB和RGBD两种类型任务的训练与测试
-    "data_mode": "RGBD",  # 'RGB'/'RGBD'
+    "data_mode": "RGBD",  # 'RGB'/'RGBD' 任务模式，支持RGB和RGBD两种类型任务的训练与测试
     # RGBD
     "rgbd_data": {
         "tr_data_path": rgbdtr_path,
         # "tr_data_path": dutrgbdtr_path,
         "te_data_list": {
-            "dutrgbd": dutrgbdte_path,
-            # "lfsd": lfsd_path,
-            # "njud": njudte_path,
-            # "nlpr": nlprte_path,
-            # "rgbd135": rgbd135_path,
-            # "sip": sip_path,
-            # "ssd": ssd_path,
-            # "stereo797": stereo797_path,
-            # "stereo1000": stereo1000_path,
+            # "dutrgbd": dutrgbdte_path,
+            "lfsd": lfsd_path,
+            "njud": njudte_path,
+            "nlpr": nlprte_path,
+            "rgbd135": rgbd135_path,
+            "sip": sip_path,
+            "ssd": ssd_path,
+            "stereo797": stereo797_path,
+            "stereo1000": stereo1000_path,
         },
     },
     # RGB

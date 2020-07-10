@@ -132,15 +132,15 @@ class Tester:
             if self.save_pre:
                 pred_pil.save(osp.join(self.save_path, depth_mask_name))
 
-            pred_array = np.asarray(pred_pil)
-            max_pred_array = pred_array.max()
-            min_pred_array = pred_array.min()
-            if max_pred_array == min_pred_array:
-                pred_array = pred_array / 255
-            else:
-                pred_array = (pred_array - min_pred_array) / (max_pred_array - min_pred_array)
-
             if self.has_masks:
+                pred_array = np.asarray(pred_pil)
+                max_pred_array = pred_array.max()
+                min_pred_array = pred_array.min()
+                if max_pred_array == min_pred_array:
+                    pred_array = pred_array / 255
+                else:
+                    pred_array = (pred_array - min_pred_array) / (max_pred_array - min_pred_array)
+
                 mask_path = os.path.join(self.mask_dir, depth_mask_name)
                 mask_pil = Image.open(mask_path).convert("L")
                 mask_array = np.asarray(mask_pil)
