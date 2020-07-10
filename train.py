@@ -252,6 +252,23 @@ class Trainer:
                 weight_decay=self.args["weight_decay"],
                 nesterov=self.args["nesterov"],
             )
+        elif self.args["optim"] == "f3_trick":
+            backbone, head = [], []
+            for name, params_tensor in self.net.named_parameters():
+                if "encoder" in name:
+                    backbone.append(params_tensor)
+                else:
+                    head.append(params_tensor)
+            params = [
+                {"params": backbone, "lr": 0.1 * self.args["lr"]},
+                {"params": head, "lr": self.args["lr"]},
+            ]
+            optimizer = SGD(
+                params=params,
+                momentum=self.args["momentum"],
+                weight_decay=self.args["weight_decay"],
+                nesterov=self.args["nesterov"],
+            )
         else:
             raise NotImplementedError
         print("optimizer = ", optimizer)
