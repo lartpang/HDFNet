@@ -2,15 +2,9 @@
 
 (ECCV 2020) Hierarchical Dynamic Filtering Network for RGB-D Salient Object Detection
 
-[[Results & PretrainedParams (j9qu)](https://pan.baidu.com/s/1hExlf0uZ0kuar99xzpL0Sw)]
-
-![image](https://user-images.githubusercontent.com/26847524/87150231-45f15f80-c2e4-11ea-8ce8-fb8588faf5f5.png)
-
-![image](https://user-images.githubusercontent.com/26847524/87150259-4e499a80-c2e4-11ea-94d2-1427a7a59bfa.png)
-
-![image](https://user-images.githubusercontent.com/26847524/87150301-5acdf300-c2e4-11ea-8bff-2f9178675730.png)
-
-![image](https://user-images.githubusercontent.com/26847524/87150362-789b5800-c2e4-11ea-81ea-8c70778efc6a.png)
+> Author: Lart Pang(`lartpang@163.com`)
+>
+> This is a complete, modular and easily modified code base based on PyTorch, which is suitable for the training and testing of significant target detection task model.
 
 ```text
 @inproceedings{HDFNet-ECCV2020,
@@ -21,11 +15,25 @@
 }
 ```
 
-~~Our code will be released soon.~~
+**NOTE**: 
+* In the link below, we provide the results of the two versions (with/without `_STEREO`). 
+* Specifically, in the file with `_STEREO`, two versions of the STEREO dataset are provided. 
+    * One of them contains 797 pictures, and the other contains 1000 pictures. 
+    * In our paper, the results evaluated on the latter are used, which is exactly what is provided in the file without `_STEREO`.
 
-> Author: Lart Pang(`lartpang@163.com`)
->
-> This is a complete, modular and easily modified code base based on PyTorch, which is suitable for the training and testing of significant target detection task model.
+[[Results & PretrainedParams (j9qu)](https://pan.baidu.com/s/1hExlf0uZ0kuar99xzpL0Sw)]
+
+* RGBD-DATASET
+    * https://github.com/jiwei0921/RGBD-SOD-datasets
+    * http://dpfan.net/d3netbenchmark/
+
+![image](https://user-images.githubusercontent.com/26847524/87150231-45f15f80-c2e4-11ea-8ce8-fb8588faf5f5.png)
+
+![image](https://user-images.githubusercontent.com/26847524/87150259-4e499a80-c2e4-11ea-94d2-1427a7a59bfa.png)
+
+![image](https://user-images.githubusercontent.com/26847524/87150301-5acdf300-c2e4-11ea-8bff-2f9178675730.png)
+
+![image](https://user-images.githubusercontent.com/26847524/87150362-789b5800-c2e4-11ea-81ea-8c70778efc6a.png)
 
 ## Repository Details
 
