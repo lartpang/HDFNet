@@ -1,5 +1,7 @@
 # HDFNet
 
+![GitHub License](https://img.shields.io/github/license/lartpang/HDFNet?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/lartpang/HDFNet?style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/lartpang/HDFNet?style=flat-square)
 ![GitHub stars](https://img.shields.io/github/stars/lartpang/HDFNet?style=flat-square)
 [![Arixv Page](https://img.shields.io/badge/Arixv-2007.06227-red?style=flat-square)](https://arxiv.org/abs/2007.06227)
