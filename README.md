@@ -8,6 +8,8 @@
 
 (ECCV 2020) Hierarchical Dynamic Filtering Network for RGB-D Salient Object Detection
 
+Gitee Mirror: <https://gitee.com/p_lart/HDFNet>
+
 > Author: Lart Pang(`lartpang@163.com`)
 >
 > This is a complete, modular and easily modified code base based on PyTorch, which is suitable for the training and testing of significant target detection task model.

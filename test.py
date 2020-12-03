@@ -9,6 +9,7 @@ import argparse
 import os
 import os.path as osp
 from datetime import datetime
+from distutils.util import strtobool
 
 import numpy as np
 import torch
@@ -26,23 +27,22 @@ my_parser = argparse.ArgumentParser(
     epilog="Enjoy the program! :)",
     allow_abbrev=False,
 )
-my_parser.version = "1.0.0"
 my_parser.add_argument("--param_path", required=True, type=str, help="自定义参数文件路径")
 my_parser.add_argument("--model", required=True, type=str, help="选择使用的模型的名字，请把对应的模型类导入到network文件夹中的`__init__.py`文件中")
 my_parser.add_argument("--testset", required=True, type=str, help="测试集路径，该路径下至少包含两个文件夹: Image, Depth")
+# https://stackoverflow.com/a/46951029
 my_parser.add_argument(
     "--has_masks",
-    default="False",
-    choices=["True", "False"],
-    type=str,
+    default=False,
+    type=lambda x: bool(strtobool(str(x))),
     help="是否存在对应的Mask数据，即`--testset`指定的路径下是否包含存放有mask文件的Mask文件夹",
 )
-my_parser.add_argument("--save_pre", default="True", choices=["True", "False"], type=str, help="是否保存测试生成的结果")
+my_parser.add_argument("--save_pre", default=False, type=lambda x: bool(strtobool(str(x))), help="是否保存测试生成的结果")
 my_parser.add_argument("--save_path", default="", type=str, help="保存测试结果的路径")
 my_parser.add_argument(
     "--data_mode", default="RGBD", choices=["RGB", "RGBD"], type=str, help="测试的是RGB数据还是RGBD数据，注意请选择使用对应任务的模型"
 )
-my_parser.add_argument("--use_gpu", default="True", choices=["True", "False"], type=str, help="测试是否使用GPU")
+my_parser.add_argument("--use_gpu", default=True, type=lambda x: bool(strtobool(str(x))), help="测试是否使用GPU")
 my_args = my_parser.parse_args()
 
 
