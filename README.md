@@ -23,6 +23,9 @@ Gitee Mirror: <https://gitee.com/p_lart/HDFNet>
 }
 ```
 
+**News**: 
+* The proposed model (HDFNet) is an important baseline of the winning solution in NTIRE 2021 (Depth Guided Image Relighting Challenge) hosted in CVPR 2021 workshop (winner: AICSNTU-MBNet team (Asustek Computer Inc & National Taiwan University)). [[PAPER](https://arxiv.org/pdf/2105.00690.pdf)] [[COOD](https://github.com/weitingchen83/NTIRE2021-Depth-Guided-Image-Relighting-MBNet)]
+
 **NOTE**: 
 * In the link below, we provide the results of the two versions (with/without `_STEREO`). 
 * Specifically, in the file with `_STEREO`, two versions of the STEREO dataset are provided. 
